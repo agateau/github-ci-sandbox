@@ -51,7 +51,9 @@ jobs:
 
       - name: Create release
         run: |
-          gh release create --draft --verify-tag "$TAG" artifacts/*.zip artifacts/*.tar.gz
+          ls
+          ls artifacts
+          gh release create --draft --verify-tag "$TAG" artifacts/dummy-$TAG.*
         env:
           TAG: ${{ steps.info.outputs.tag }}
           GH_TOKEN: ${{ github.token }}
