@@ -1,0 +1,51 @@
+name: Application Release
+
+on:
+  push:
+    tags:
+      - '[0-9]*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read info
+        id: info
+        shell: bash
+        run: |
+          echo "tag=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+
+      - name: Create artifacts
+        run: |
+          mkdir -p artifacts
+          touch artifacts/dummy-$tag.zip
+          touch artifacts/dummy-$tag.tar.gz
+        env:
+          tag: ${{ steps.info.output.tag }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: |
+            artifacts
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read info
+        id: info
+        shell: bash
+        run: |
+          echo "tag=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: artifacts
+
+      - name: Create release
+        run: |
+          gh release create --draft --verify-tag "$tag" artifacts/*.zip artifacts/*.tar.gz
+        env:
+          tag: ${{ steps.info.output.tag }}
