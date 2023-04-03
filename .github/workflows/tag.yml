@@ -18,8 +18,8 @@ jobs:
       - name: Create artifacts
         run: |
           mkdir -p artifacts
-          touch artifacts/dummy-$TAG.zip
-          touch artifacts/dummy-$TAG.tar.gz
+          zip artifacts/dummy-$TAG.zip README.md LICENSE
+          tar czf artifacts/dummy-$TAG.tar.gz README.md LICENSE
         env:
           TAG: ${{ steps.info.output.tag }}
 
