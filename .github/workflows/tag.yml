@@ -38,6 +38,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      # `gh` needs a checkout of the repository to work
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Read info
         id: info
         shell: bash
@@ -52,8 +56,6 @@ jobs:
 
       - name: Create release
         run: |
-          ls
-          ls artifacts
           gh release create --draft --verify-tag "$TAG" artifacts/dummy-$TAG.*
         env:
           TAG: ${{ steps.info.outputs.tag }}
