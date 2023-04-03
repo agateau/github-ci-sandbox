@@ -11,12 +11,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  create-artifacts:
+  build:
     uses: ./.github/workflows/main.yml
 
   release:
     runs-on: ubuntu-latest
-    needs: create-artifacts
+    needs: build
     steps:
       # `gh` needs a checkout of the repository to work
       - name: Checkout

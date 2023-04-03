@@ -16,25 +16,20 @@ jobs:
         run:
           echo "Building $GITHUB_REF" > result.txt
 
-  create-artifacts:
-    if: (github.event_name == 'workflow_call' || github.event_name == 'workflow_dispatch') && startsWith(github.event.ref, 'refs/tags')
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Read info
         id: info
         shell: bash
         run: |
-          echo "tag=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+          echo "VERSION=$(git describe)" >> $GITHUB_OUTPUT
 
       - name: Create artifacts
         run: |
-          [ -n "$TAG" ]
+          [ -n "$VERSION" ]
           mkdir -p artifacts
-          zip artifacts/dummy-$TAG.zip README.md LICENSE result.txt
-          tar czf artifacts/dummy-$TAG.tar.gz README.md LICENSE result.txt
+          zip artifacts/dummy-$VERSION.zip README.md LICENSE result.txt
+          tar czf artifacts/dummy-$VERSION.tar.gz README.md LICENSE result.txt
         env:
-          TAG: ${{ steps.info.outputs.tag }}
+          VERSION: ${{ steps.info.outputs.VERSION }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
