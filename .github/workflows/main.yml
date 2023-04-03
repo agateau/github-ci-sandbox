@@ -12,6 +12,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Build
+        run:
+          echo "Building $GITHUB_REF" > result.txt
+
+  create-artifacts:
+    if: (github.event_name == 'workflow_call' || github.event_name == 'workflow_dispatch') && startsWith(github.event.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Read info
         id: info
         shell: bash
@@ -22,8 +31,8 @@ jobs:
         run: |
           [ -n "$TAG" ]
           mkdir -p artifacts
-          zip artifacts/dummy-$TAG.zip README.md LICENSE
-          tar czf artifacts/dummy-$TAG.tar.gz README.md LICENSE
+          zip artifacts/dummy-$TAG.zip README.md LICENSE result.txt
+          tar czf artifacts/dummy-$TAG.tar.gz README.md LICENSE result.txt
         env:
           TAG: ${{ steps.info.outputs.tag }}
 
