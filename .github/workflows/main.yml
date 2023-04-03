@@ -9,8 +9,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          # Use `fetch-depth: 0` otherwise `git describe` does not see valid
+          # tags, causing ci/create-archive to create snapshot archives. This
+          # also requires the "Fix actions/checkout bug" step below to work.
+          fetch-depth: 0
+
+      # See https://github.com/actions/checkout/issues/290#issuecomment-680260080
+      - name: Fix actions/checkout bug
+        run: git fetch --force --tags
 
       - name: Build
         run:
@@ -20,7 +28,10 @@ jobs:
         id: info
         shell: bash
         run: |
-          echo "VERSION=$(git describe)" >> $GITHUB_OUTPUT
+          VERSION=$(git describe)
+          echo VERSION=$VERSION
+          [ -n "$VERSION" ]
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create artifacts
         run: |
