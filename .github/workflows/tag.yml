@@ -1,4 +1,4 @@
-name: Application Release
+name: tag
 
 permissions:
   # Required by `gh` to be able to create the release
