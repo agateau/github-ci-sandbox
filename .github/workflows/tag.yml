@@ -1,5 +1,9 @@
 name: Application Release
 
+permissions:
+  # Required by `gh` to be able to create the release
+  contents: write
+
 on:
   push:
     tags:
