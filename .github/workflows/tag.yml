@@ -12,7 +12,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-    steps:
       - name: Read info
         id: info
         shell: bash
