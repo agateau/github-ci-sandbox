@@ -18,10 +18,10 @@ jobs:
       - name: Create artifacts
         run: |
           mkdir -p artifacts
-          touch artifacts/dummy-$tag.zip
-          touch artifacts/dummy-$tag.tar.gz
+          touch artifacts/dummy-$TAG.zip
+          touch artifacts/dummy-$TAG.tar.gz
         env:
-          tag: ${{ steps.info.output.tag }}
+          TAG: ${{ steps.info.output.tag }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -46,6 +46,7 @@ jobs:
 
       - name: Create release
         run: |
-          gh release create --draft --verify-tag "$tag" artifacts/*.zip artifacts/*.tar.gz
+          gh release create --draft --verify-tag "$TAG" artifacts/*.zip artifacts/*.tar.gz
         env:
-          tag: ${{ steps.info.output.tag }}
+          TAG: ${{ steps.info.output.tag }}
+          GH_TOKEN: ${{ github.token }}
