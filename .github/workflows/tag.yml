@@ -17,11 +17,12 @@ jobs:
 
       - name: Create artifacts
         run: |
+          [ -n "$TAG" ]
           mkdir -p artifacts
           zip artifacts/dummy-$TAG.zip README.md LICENSE
           tar czf artifacts/dummy-$TAG.tar.gz README.md LICENSE
         env:
-          TAG: ${{ steps.info.output.tag }}
+          TAG: ${{ steps.info.outputs.tag }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -49,5 +50,5 @@ jobs:
         run: |
           gh release create --draft --verify-tag "$TAG" artifacts/*.zip artifacts/*.tar.gz
         env:
-          TAG: ${{ steps.info.output.tag }}
+          TAG: ${{ steps.info.outputs.tag }}
           GH_TOKEN: ${{ github.token }}
