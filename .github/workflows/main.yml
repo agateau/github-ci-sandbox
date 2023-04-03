@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Read info
+        id: info
+        shell: bash
+        run: |
+          echo "tag=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+
+      - name: Create artifacts
+        run: |
+          [ -n "$TAG" ]
+          mkdir -p artifacts
+          zip artifacts/dummy-$TAG.zip README.md LICENSE
+          tar czf artifacts/dummy-$TAG.tar.gz README.md LICENSE
+        env:
+          TAG: ${{ steps.info.outputs.tag }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: |
+            artifacts
