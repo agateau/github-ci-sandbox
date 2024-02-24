@@ -1,0 +1,40 @@
+# Log platform-specific information, as returned by Python
+name: arch-os
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+          # Intel-based
+          - macos-11
+          # ARM-based
+          - macos-14
+          - windows-2019
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Print arch-os info
+        run: |
+          python -c '
+          import platform
+          print(f"{platform.system()=}")
+          print(f"{platform.machine()=}")
+          print(f"{platform.processor()=}")
+          '
