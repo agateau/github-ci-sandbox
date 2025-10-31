@@ -1,0 +1,14 @@
+name: windows
+
+on:
+  push:
+
+jobs:
+  where-is-bash:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: find all bashes
+        run: which -a bash
