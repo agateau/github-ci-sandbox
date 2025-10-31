@@ -12,3 +12,5 @@ jobs:
     steps:
       - name: find all bashes
         run: which -a bash
+      - name: run something with bash
+        run: bash -c "ls /"
